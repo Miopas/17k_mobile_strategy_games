@@ -20,11 +20,11 @@ The dataset consists of 17007 games wiht 16 features. The target is to predict t
 - [x] Logistic Regression (baseline)
 - [x] Boosting tree
 - [x] SVM
-- [] CNN
-- [] fastText
+- [ ] CNN
+- [ ] fastText
 
 #### Metric
-- [] auroc
+- [ ] auroc
 - [x] accuracy
 
 #### Examples
