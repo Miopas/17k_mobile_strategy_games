@@ -4,6 +4,7 @@ from sklearn import preprocessing
 from models import LogisticRegressionModel, SVMClassifier, BoostingTree
 from evaluation import plot_confusion_matrix
 import argparse
+import pandas as pd
 
 parser = argparse.ArgumentParser()
 
@@ -29,8 +30,12 @@ models = {
 }
 
 if __name__ == '__main__':
-    X_train, y_train = load_data(args.train_file)
-    X_test, y_test = load_data(args.test_file)
+
+    col_sel = ['In-app Purchases', 'Board', 'Simulation', 'Subtitle', 'Size', 'Puzzle', 'Price', 'User Rating Count', 'Name', 'Update_Gap', 'Languages', 'age_rating', 'Action']
+    col_sel = col_sel[0:-2]
+
+    X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
+    X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
 
     le = preprocessing.LabelEncoder()
     le.fit(y_train)
