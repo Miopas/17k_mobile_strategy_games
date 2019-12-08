@@ -162,5 +162,5 @@ for i in range(n):
         data_purchases[i] = 1
 data['In-app Purchases'] = data_purchases
 
-data.to_csv('E:\phd tools\ML_Problem2\data.csv')
+data.to_csv('E:\phd tools\ML_Problem2\data.csv',index=False)
 
