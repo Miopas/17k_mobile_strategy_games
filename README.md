@@ -39,4 +39,23 @@ $ sh run.sh bt
 0.39193654990085924
 ```
 
+## Experiments and Analysis
+
+By counting the frequency of average user rating, we can find that the data is imbalanced.
+```
+2861 4.5
+990 5.0
+14 1.0
+60 1.5
+158 2.0
+317 2.5
+514 3.0
+925 3.5
+1722 4.0
+```
+#### feature selection
+```
+$ python feature_selection.py --train_file ../data/train.csv
+['Intercept', 'In-app Purchases', 'Board', 'Simulation', 'Subtitle', 'Size', 'Puzzle', 'Price', 'User Rating Count', 'Name', 'Update_Gap', 'Languages', 'age_rating', 'Action']
+```
 
