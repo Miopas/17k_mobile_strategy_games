@@ -20,32 +20,37 @@ def stepwise(X, y, headers):
 
     columns = [col for col in headers]
     X_df = pd.DataFrame(X, columns=columns)
-    col_sel = []
 
+    col_sel = []
     metric_lst = []
+    model_lst = []
     while len(columns) > 0:
         col = columns[0]
         metric_max = -np.inf
+        model_max = None
         for col in columns:
             X_tmp = X_df.loc[:,col_sel + [col]]
 
-            model = LogisticRegressionModel()
+            #model = LogisticRegressionModel()
+            model = BoostingTree()
             model.fit(X_tmp, y)
             _, y_hat = model.predict(X_tmp)
             metric = roc_auc_score(y, y_hat)
 
             if metric > metric_max:
                 metric_max = metric
+                model_max = model
                 col_best = col
 
         columns.remove(col_best)
         col_sel.append(col_best)
         metric_lst.append(metric_max)
-    return col_sel, metric_lst
+        model_lst.append(model_max)
+    return col_sel, metric_lst, model_lst
 
 
 if __name__ == '__main__':
-    n = 100
+    n = 10
 
     input_file = args.train_file
     df = pd.read_csv(input_file)
@@ -53,27 +58,27 @@ if __name__ == '__main__':
     columns.remove('Average User Rating')
     columns.remove('ID')
 
-    #metric_max = -np.inf
-    #col_sel_best = []
-    #for i in range(n):
-    #train, valid = train_test_split(df, test_size=0.2)
-    #X_train, y_train = load_data(train)
-    X_train, y_train = load_data(df)
+    metric_max = -np.inf
+    col_sel_best = []
+    for i in range(n):
+        train, valid = train_test_split(df, test_size=0.2)
+        X_train, y_train = load_data(train)
 
-    selected_cols, metric_list = stepwise(X_train, y_train, columns)
+        selected_cols, metric_list, model_list = stepwise(X_train, y_train, columns)
 
-    metric_max = max(metric_list)
-    max_idx = metric_list.index(metric_max)
+        metric = max(metric_list)
+        idx = metric_list.index(metric)
+        col_sel = selected_cols[0:idx+1]
 
-    #X_valid, y_valid = load_data(valid)
+        X_valid, y_valid = load_data(valid, col_sel)
 
-    #_, y_hat = model.predict(X_valid)
-    #metric = roc_auc_score(y_valid, y_hat)
-    #if metric > metric_max:
-    #    metric_max = metric
-    #    col_sel_best = selected_cols
+        _, y_hat = model_list[idx].predict(X_valid)
+        metric = roc_auc_score(y_valid, y_hat)
+        if metric > metric_max:
+            metric_max = metric
+            col_sel_best = col_sel
 
-    print('best features:{}'.format(selected_cols[0:max_idx+1]))
+    print('best features:{}'.format(col_sel_best))
     print('max auroc:{0:.3f}'.format(metric_max))
     #pdb.set_trace()
 

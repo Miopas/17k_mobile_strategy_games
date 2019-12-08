@@ -5,13 +5,14 @@ from models import LogisticRegressionModel, SVMClassifier, BoostingTree
 from evaluation import plot_confusion_matrix
 import argparse
 import pandas as pd
+import pdb
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
     '--model',
     type=str,
-    choices=['lr', 'svm', 'bt', 'cnn', 'ft'],
+    choices=['linear', 'lr', 'svm', 'bt', 'cnn', 'ft'],
     help='data file surfix')
 
 parser.add_argument(
@@ -29,13 +30,22 @@ models = {
     "bt": BoostingTree(),
 }
 
+
+def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
+    lb = LabelBinarizer()
+    lb.fit(y_test)
+    y_test = lb.transform(y_test)
+    y_pred = lb.transform(y_pred)
+    return roc_auc_score(y_test, y_pred, average=average)
+
 if __name__ == '__main__':
 
-    col_sel = ['In-app Purchases', 'Board', 'Simulation', 'Subtitle', 'Size', 'Puzzle', 'Price', 'User Rating Count', 'Name', 'Update_Gap', 'Languages', 'age_rating', 'Action']
-    col_sel = col_sel[0:-2]
-
+    col_sel = ['User Rating Count', 'In-app Purchases', 'Puzzle', 'Subtitle', 'Board']
     X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
     X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
+
+    #X_train, y_train = load_data(pd.read_csv(args.train_file))
+    #X_test, y_test = load_data(pd.read_csv(args.test_file))
 
     le = preprocessing.LabelEncoder()
     le.fit(y_train)
@@ -44,14 +54,13 @@ if __name__ == '__main__':
 
     model = models[args.model]
     model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+    y_pred, y_pred_prob = model.predict(X_test)
 
-    _, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
-
-    #from sklearn.metrics import precision_recall_fscore_support
-    #print(precision_recall_fscore_support(y_test, y_pred))
+    from sklearn.metrics import roc_auc_score
+    print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
 
     from sklearn.metrics import accuracy_score
-    print(accuracy_score(y_test, y_pred))
+    print('acc:{0:.3f}'.format(accuracy_score(y_test, y_pred)))
 
+    #_, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
 

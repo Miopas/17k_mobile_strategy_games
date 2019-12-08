@@ -1,14 +1,20 @@
-import jieba as jieba
-import nltk as nltk
+#import jieba as jieba
+#import nltk as nltk
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+#import seaborn as sns
+#from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 #from sns import countplot
 import datetime
+import sys
 
-data = pd.read_csv("appstore_games.csv")
+inputfile = sys.argv[1]
+outputfile = sys.argv[2]
+
+#data = pd.read_csv("appstore_games.csv")
+data = pd.read_csv(inputfile)
+
 data = data.dropna(axis=0,subset=['Average User Rating']) # drop the rows which target is none
 
 developers = data['Developer'].value_counts()  # calculate the developers of games
@@ -105,7 +111,7 @@ NAR = [data.age_rating[(data['age_rating']=='4')].count(),data.age_rating[(data[
 AR = ['Age 4+','Age 9+','Age 12+','Age 17+']
 
 plt.pie(NAR, labels=AR, startangle=90, autopct='%.1f%%')
-plt.show()
+#plt.show()
 #print(data['age_rating'])
 
 #languages
@@ -159,8 +165,21 @@ for i in range(n):
     if(pd.isnull(data_purchases[i])):
        data_purchases[i] = 0
     else:
-        data_purchases[i] = 1
+       data_purchases[i] = 1
 data['In-app Purchases'] = data_purchases
 
-data.to_csv('E:\phd tools\ML_Problem2\data.csv')
+# merge ratings
+new_ratings = []
+for i, row in data.iterrows():
+    rating = row['Average User Rating']
+    if rating <= 4.0:
+        ratings = 0
+    else:
+        ratings = 1
+    new_ratings.append(ratings)
+data['Average User Rating'] = new_ratings
+
+
+#data.to_csv('E:\phd tools\ML_Problem2\data.csv')
+data.to_csv(outputfile, index=False)
 
