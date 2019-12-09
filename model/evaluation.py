@@ -53,6 +53,6 @@ def plot_confusion_matrix(y_true, y_pred,
             ax.text(j, i, format(cm[i, j], fmt),
                     ha="center", va="center",
                     color="white" if cm[i, j] > thresh else "black")
-    fig.tight_layout()
+    #fig.tight_layout()
     fig.savefig(figname)
     return ax, cm

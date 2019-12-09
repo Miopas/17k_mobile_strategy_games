@@ -1,7 +1,7 @@
 import sys
 from data_loader import load_data
 from sklearn import preprocessing
-from models import LogisticRegressionModel, SVMClassifier, BoostingTree
+from models import LogisticRegressionModel, SVMClassifier, BoostingTree, MixModel
 from evaluation import plot_confusion_matrix
 import argparse
 import pandas as pd
@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--model',
     type=str,
-    choices=['linear', 'lr', 'svm', 'bt', 'cnn', 'ft'],
+    choices=['mix', 'linear', 'lr', 'svm', 'bt', 'cnn', 'ft'],
     help='data file surfix')
 
 parser.add_argument(
@@ -28,6 +28,7 @@ models = {
     "lr": LogisticRegressionModel(),
     "svm": SVMClassifier(),
     "bt": BoostingTree(),
+    "mix": MixModel(),
 }
 
 
@@ -41,8 +42,7 @@ def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
 if __name__ == '__main__':
 
     # try feature selection
-    #col_sel = ['In-app Purchases', 'Board', 'Subtitle', 'Developer', 'Update_Gap', 'Name', 'Action']
-    #col_sel = ['Size', 'Update_Gap', 'User Rating Count', 'Puzzle', 'Developer', 'Price', 'In-app Purchases', 'Simulation', 'Name', 'Languages', 'age_rating', 'Action', 'Board', 'Subtitle']
+    #col_sel = ['Board', 'Developer', 'In-app Purchases', 'Size', 'Subtitle', 'Update_Gap', 'User Rating Count']
     #X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
     #X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
 
@@ -58,8 +58,8 @@ if __name__ == '__main__':
     model.fit(X_train, y_train)
     y_pred, y_pred_prob = model.predict(X_test)
 
-    #from sklearn.metrics import roc_auc_score
-    #print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
+    from sklearn.metrics import roc_auc_score
+    print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
 
     from sklearn.metrics import accuracy_score
     print('acc:{0:.3f}'.format(accuracy_score(y_test, y_pred)))
