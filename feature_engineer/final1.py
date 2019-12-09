@@ -176,15 +176,15 @@ data['Developer'] = developers_features
 # Description features: length and frequency
 
 # merge ratings
-new_ratings = []
-for i, row in data.iterrows():
-    rating = row['Average User Rating']
-    if rating <= 4.0:
-        ratings = 0
-    else:
-        ratings = 1
-    new_ratings.append(ratings)
-data['Average User Rating'] = new_ratings
+#new_ratings = []
+#for i, row in data.iterrows():
+#    rating = row['Average User Rating']
+#    if rating <= 4.0:
+#        ratings = 0
+#    else:
+#        ratings = 1
+#    new_ratings.append(ratings)
+#data['Average User Rating'] = new_ratings
 
 
 data = data.drop(['URL', 'Icon URL','Description','Primary Genre'], axis=1)  #URL and ID are unrelated to the rating, delete 'Icon URL'(temporarily)

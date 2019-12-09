@@ -40,8 +40,9 @@ def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
 
 if __name__ == '__main__':
 
-    #col_sel = ['User Rating Count', 'In-app Purchases', 'Puzzle', 'Subtitle', 'Board']
-    #col_sel = ['User Rating Count', 'Subtitle']
+    # try feature selection
+    #col_sel = ['In-app Purchases', 'Board', 'Subtitle', 'Developer', 'Update_Gap', 'Name', 'Action']
+    #col_sel = ['Size', 'Update_Gap', 'User Rating Count', 'Puzzle', 'Developer', 'Price', 'In-app Purchases', 'Simulation', 'Name', 'Languages', 'age_rating', 'Action', 'Board', 'Subtitle']
     #X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
     #X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
 
@@ -57,14 +58,14 @@ if __name__ == '__main__':
     model.fit(X_train, y_train)
     y_pred, y_pred_prob = model.predict(X_test)
 
-    from sklearn.metrics import roc_auc_score
-    print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
+    #from sklearn.metrics import roc_auc_score
+    #print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
 
     from sklearn.metrics import accuracy_score
     print('acc:{0:.3f}'.format(accuracy_score(y_test, y_pred)))
 
     from sklearn.metrics import precision_recall_fscore_support
-    precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
+    precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='binary')
     print('precision_recall_fscore:{0:.3f}\t{1:.3f}\t{2:.3f}'.format(precision, recall, f1))
 
     _, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
