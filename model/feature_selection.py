@@ -1,6 +1,7 @@
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
+from sklearn.metrics import accuracy_score
 import pandas as pd
 import numpy as np
 import argparse
@@ -34,8 +35,8 @@ def stepwise(X, y, headers):
             #model = LogisticRegressionModel()
             model = BoostingTree()
             model.fit(X_tmp, y)
-            _, y_hat = model.predict(X_tmp)
-            metric = roc_auc_score(y, y_hat)
+            y_pred, y_pred_prob = model.predict(X_tmp)
+            metric = accuracy_score(y, y_pred)
 
             if metric > metric_max:
                 metric_max = metric
@@ -50,7 +51,7 @@ def stepwise(X, y, headers):
 
 
 if __name__ == '__main__':
-    n = 10
+    n = 20
 
     input_file = args.train_file
     df = pd.read_csv(input_file)
@@ -72,13 +73,13 @@ if __name__ == '__main__':
 
         X_valid, y_valid = load_data(valid, col_sel)
 
-        _, y_hat = model_list[idx].predict(X_valid)
-        metric = roc_auc_score(y_valid, y_hat)
+        y_pred, y_pred_prob = model_list[idx].predict(X_valid)
+        metric = accuracy_score(y_valid, y_pred)
         if metric > metric_max:
             metric_max = metric
             col_sel_best = col_sel
 
+
     print('best features:{}'.format(col_sel_best))
-    print('max auroc:{0:.3f}'.format(metric_max))
-    #pdb.set_trace()
+    print('max acc:{0:.3f}'.format(metric_max))
 
