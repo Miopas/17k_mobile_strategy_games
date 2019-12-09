@@ -40,12 +40,13 @@ def multiclass_roc_auc_score(y_test, y_pred, average="macro"):
 
 if __name__ == '__main__':
 
-    col_sel = ['User Rating Count', 'In-app Purchases', 'Puzzle', 'Subtitle', 'Board']
-    X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
-    X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
+    #col_sel = ['User Rating Count', 'In-app Purchases', 'Puzzle', 'Subtitle', 'Board']
+    #col_sel = ['User Rating Count', 'Subtitle']
+    #X_train, y_train = load_data(pd.read_csv(args.train_file), col_sel)
+    #X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
 
-    #X_train, y_train = load_data(pd.read_csv(args.train_file))
-    #X_test, y_test = load_data(pd.read_csv(args.test_file))
+    X_train, y_train = load_data(pd.read_csv(args.train_file))
+    X_test, y_test = load_data(pd.read_csv(args.test_file))
 
     le = preprocessing.LabelEncoder()
     le.fit(y_train)
@@ -62,5 +63,9 @@ if __name__ == '__main__':
     from sklearn.metrics import accuracy_score
     print('acc:{0:.3f}'.format(accuracy_score(y_test, y_pred)))
 
-    #_, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
+    from sklearn.metrics import precision_recall_fscore_support
+    precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
+    print('precision_recall_fscore:{0:.3f}\t{1:.3f}\t{2:.3f}'.format(precision, recall, f1))
+
+    _, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
 

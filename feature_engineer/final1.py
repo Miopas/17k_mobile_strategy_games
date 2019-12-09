@@ -17,10 +17,6 @@ data = pd.read_csv(inputfile)
 
 data = data.dropna(axis=0,subset=['Average User Rating']) # drop the rows which target is none
 
-developers = data['Developer'].value_counts()  # calculate the developers of games
-pd.set_option('display.max_rows', None)
-#print(data['Developer'].value_counts())
-data = data.drop(['URL', 'Icon URL','Description','Developer','Primary Genre'], axis=1)  #URL and ID are unrelated to the rating, delete 'Icon URL'(temporarily)
 n,m = data.shape
 print(n,m)
 
@@ -102,8 +98,6 @@ for i in range(n):
 data['Subtitle'] = data_subtitle
 
 # age, delete '+'
-
-
 data['age_rating'] = data['Age Rating'].apply(lambda s : s.replace('+',''))
 data = data.drop(['Age Rating'],axis=1)
 NAR = [data.age_rating[(data['age_rating']=='4')].count(),data.age_rating[(data['age_rating']=='9')].count(),\
@@ -168,6 +162,19 @@ for i in range(n):
        data_purchases[i] = 1
 data['In-app Purchases'] = data_purchases
 
+# add developer features
+# 'developers' can be used as a dict, in which key is developer names and value is count
+developers = data['Developer'].value_counts()  # calculate the developers of games
+developers_features = []
+for i, row in data.iterrows():
+    developer_name = row['Developer']
+    developer_feat = developers[developer_name]
+    developers_features.append(developer_feat)
+data['Developer'] = developers_features
+
+
+# Description features: length and frequency
+
 # merge ratings
 new_ratings = []
 for i, row in data.iterrows():
@@ -179,6 +186,8 @@ for i, row in data.iterrows():
     new_ratings.append(ratings)
 data['Average User Rating'] = new_ratings
 
+
+data = data.drop(['URL', 'Icon URL','Description','Primary Genre'], axis=1)  #URL and ID are unrelated to the rating, delete 'Icon URL'(temporarily)
 
 #data.to_csv('E:\phd tools\ML_Problem2\data.csv')
 data.to_csv(outputfile, index=False)
