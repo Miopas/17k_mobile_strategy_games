@@ -5,7 +5,9 @@ from models import LogisticRegressionModel, SVMClassifier, BoostingTree, MixMode
 from evaluation import plot_confusion_matrix
 import argparse
 import pandas as pd
+import numpy as np
 import pdb
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser()
 
@@ -56,17 +58,11 @@ if __name__ == '__main__':
 
     model = models[args.model]
     model.fit(X_train, y_train)
-    y_pred, y_pred_prob = model.predict(X_test)
+    y_pred, y_pred_prob, y_pred_prob_vec = model.predict(X_test)
 
     from sklearn.metrics import roc_auc_score
-    print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob)))
+    print('auroc:{0:.3f}'.format(roc_auc_score(y_test, y_pred_prob_vec[:,1])))
+    #plot_confusion_matrix(y_test, y_pred_prob_vec, len(le.classes_), args.model + '.auc.png');
 
-    from sklearn.metrics import accuracy_score
-    print('acc:{0:.3f}'.format(accuracy_score(y_test, y_pred)))
 
-    from sklearn.metrics import precision_recall_fscore_support
-    precision, recall, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='binary')
-    print('precision_recall_fscore:{0:.3f}\t{1:.3f}\t{2:.3f}'.format(precision, recall, f1))
-
-    _, cm = plot_confusion_matrix(y_test, y_pred, normalize=True, classes=le.classes_, figname=args.model+'.cm.png')
 

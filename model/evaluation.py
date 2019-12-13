@@ -56,3 +56,43 @@ def plot_confusion_matrix(y_true, y_pred,
     #fig.tight_layout()
     fig.savefig(figname)
     return ax, cm
+
+
+def plot_roc(y_test, y_pred_prob_vec, n_classes, myplt=None, color='darkorange', modelname=''):
+    # Compute ROC curve and ROC area for each class
+    from sklearn.metrics import roc_curve, auc
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+
+    y_test_vec = []
+    for i in y_test.tolist():
+        if i == 0:
+            y_test_vec.append([1, 0])
+        else:
+            y_test_vec.append([0, 1])
+    y_test_vec = np.array(y_test_vec)
+
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(y_test_vec[:, i], y_pred_prob_vec[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+    # Compute micro-average ROC curve and ROC area
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test_vec.ravel(), y_pred_prob_vec.ravel())
+    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+    # Plot of a ROC curve for a specific class
+    myplt.figure()
+    lw = 2
+    myplt.plot(fpr[1], tpr[1], color=color,
+             lw=lw, label='%s ROC curve (area = %0.2f)' % (modelname, roc_auc[1]))
+    myplt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    myplt.xlim([0.0, 1.0])
+    myplt.ylim([0.0, 1.05])
+    myplt.xlabel('False Positive Rate')
+    myplt.ylabel('True Positive Rate')
+    myplt.title('Receiver operating characteristic example')
+    myplt.legend(loc="lower right")
+
+    #myplt.savefig(figname)
+
