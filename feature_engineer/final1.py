@@ -187,7 +187,9 @@ for i, row in data.iterrows():
 data['Average User Rating'] = new_ratings
 
 
+
 data = data.drop(['URL', 'Icon URL','Description','Primary Genre'], axis=1)  #URL and ID are unrelated to the rating, delete 'Icon URL'(temporarily)
+
 
 #data.to_csv('E:\phd tools\ML_Problem2\data.csv')
 data.to_csv(outputfile, index=False)

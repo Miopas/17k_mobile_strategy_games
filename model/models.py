@@ -55,7 +55,7 @@ class BoostingTree:
     def fit(self, X, y):
         self.clf = ensemble.GradientBoostingClassifier()
         self.clf.fit(X, y)
-        #print('\n'.join([str(x) for x in self.clf.feature_importances_.tolist()]))
+        print('\n'.join([str(x) for x in self.clf.feature_importances_.tolist()]))
 
     def predict(self, X):
         return self.clf.predict(X), get_prob(self.clf.predict_proba(X)), self.clf.predict_proba(X)
