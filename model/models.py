@@ -68,10 +68,10 @@ class MixModel:
 
     def predict(self, X):
         alpha = 0.5
-        y_prob = alpha * self.clf1.predict_proba(X) +  (1-alpha) * self.clf2.predict_proba(X)
-        y_pred = get_pred(y_prob)
-        y_prob = get_prob(y_prob)
-        return y_pred, y_prob
+        y_prob_vec = alpha * self.clf1.predict_proba(X) +  (1-alpha) * self.clf2.predict_proba(X)
+        y_pred = get_pred(y_prob_vec)
+        y_prob = get_prob(y_prob_vec)
+        return y_pred, y_prob, y_prob_vec
 
 class LinearModel:
     def fit(self, X, y):

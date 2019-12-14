@@ -49,8 +49,8 @@ if __name__ == '__main__':
     #X_test, y_test = load_data(pd.read_csv(args.test_file), col_sel)
 
     X_train, y_train = load_data(pd.read_csv(args.train_file))
-    #X_test, y_test = load_data(pd.read_csv(args.test_file))
-    X_test, y_test = load_data(pd.read_csv(args.train_file))
+    X_test, y_test = load_data(pd.read_csv(args.test_file))
+    #X_test, y_test = load_data(pd.read_csv(args.train_file))
 
     le = preprocessing.LabelEncoder()
     le.fit(y_train)
